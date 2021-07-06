@@ -4,7 +4,7 @@
  * \brief Internal functions shared by the SSL modules
  */
 /*
- *  Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
+ *  Copyright The Mbed TLS Contributors
  *  SPDX-License-Identifier: Apache-2.0 OR GPL-2.0-or-later
  *
  *  This file is provided under the Apache License 2.0, or the
@@ -45,8 +45,6 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  *  **********
- *
- *  This file is part of mbed TLS (https://tls.mbed.org)
  */
 #ifndef MBEDTLS_SSL_INTERNAL_H
 #define MBEDTLS_SSL_INTERNAL_H
@@ -179,6 +177,24 @@
 #define MBEDTLS_SSL_RETRANS_SENDING         1
 #define MBEDTLS_SSL_RETRANS_WAITING         2
 #define MBEDTLS_SSL_RETRANS_FINISHED        3
+
+/* This macro determines whether CBC is supported. */
+#if defined(MBEDTLS_CIPHER_MODE_CBC) &&                               \
+    ( defined(MBEDTLS_AES_C)      ||                                  \
+      defined(MBEDTLS_CAMELLIA_C) ||                                  \
+      defined(MBEDTLS_ARIA_C)     ||                                  \
+      defined(MBEDTLS_DES_C) )
+#define MBEDTLS_SSL_SOME_SUITES_USE_CBC
+#endif
+
+/* This macro determines whether the CBC construct used in TLS 1.0-1.2 (as
+ * opposed to the very different CBC construct used in SSLv3) is supported. */
+#if defined(MBEDTLS_SSL_SOME_SUITES_USE_CBC) && \
+    ( defined(MBEDTLS_SSL_PROTO_TLS1) ||        \
+      defined(MBEDTLS_SSL_PROTO_TLS1_1) ||      \
+      defined(MBEDTLS_SSL_PROTO_TLS1_2) )
+#define MBEDTLS_SSL_SOME_SUITES_USE_TLS_CBC
+#endif
 
 /*
  * Allow extra bytes for record, authentication and encryption overhead:

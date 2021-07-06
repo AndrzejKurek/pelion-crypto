@@ -1,7 +1,7 @@
 /*
  *  SSLv3/TLSv1 shared functions
  *
- *  Copyright (C) 2006-2015, ARM Limited, All Rights Reserved
+ *  Copyright The Mbed TLS Contributors
  *  SPDX-License-Identifier: Apache-2.0 OR GPL-2.0-or-later
  *
  *  This file is provided under the Apache License 2.0, or the
@@ -42,8 +42,6 @@
  *  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  *  **********
- *
- *  This file is part of mbed TLS (https://tls.mbed.org)
  */
 /*
  *  The SSL 3.0 specification was drafted by Netscape in 1996,
@@ -2572,6 +2570,11 @@ static void ssl_mac( mbedtls_md_context_t *md_ctx,
     mbedtls_md_finish( md_ctx, out                );
 }
 #endif /* MBEDTLS_SSL_PROTO_SSL3 */
+
+#if defined(MBEDTLS_ARC4_C) || defined(MBEDTLS_CIPHER_NULL_CIPHER) ||     \
+    defined(MBEDTLS_SSL_SOME_SUITES_USE_CBC)
+#define SSL_SOME_MODES_USE_MAC
+#endif
 
 /* The function below is only used in the Lucky 13 counter-measure in
  * mbedtls_ssl_decrypt_buf(). These are the defines that guard the call site. */
